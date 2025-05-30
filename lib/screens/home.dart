@@ -6,10 +6,9 @@ import 'package:fp_recipe/models/user_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   void logout(context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, 'login');
+    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 
   @override
@@ -38,18 +37,29 @@ class HomeScreen extends StatelessWidget {
                 UserModel user = UserModel.fromMap(userData);
                 userName = user.name;
               }
-
               return Scaffold(
                 appBar: AppBar(
-                  title: const Text('Account Information'),
+                  title: const Text('Profile'),
                   centerTitle: true,
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.logout),
+                      onPressed: () => logout(context),
+                      tooltip: 'Logout',
+                    ),
+                  ],
                 ),
                 body: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const CircleAvatar(
+                        radius: 50,
+                        child: Icon(Icons.person, size: 70),
+                      ),
+                      const SizedBox(height: 24),
                       Text(
-                        'Welcome, $userName!',
+                        userName,
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -57,10 +67,39 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text('Email: ${snapshot.data?.email}'),
-                      const SizedBox(height: 24),
-                      OutlinedButton(
-                        onPressed: () => logout(context),
-                        child: const Text('Logout'),
+                      const SizedBox(height: 32),
+                      Card(
+                        margin: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              const ListTile(
+                                leading: Icon(Icons.notifications),
+                                title: Text('Notifications'),
+                                trailing: Icon(Icons.chevron_right),
+                              ),
+                              const Divider(),
+                              const ListTile(
+                                leading: Icon(Icons.settings),
+                                title: Text('Settings'),
+                                trailing: Icon(Icons.chevron_right),
+                              ),
+                              const Divider(),
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.exit_to_app,
+                                  color: Colors.red,
+                                ),
+                                title: const Text(
+                                  'Logout',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onTap: () => logout(context),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
