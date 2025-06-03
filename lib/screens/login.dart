@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fp_recipe/services/notification_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,15 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Login method, after successful login:
   void login() async {
-    // Validate inputs first
-    if (_emailController.text.trim().isEmpty ||
-        _passwordController.text.isEmpty) {
-      setState(() {
-        _errorCode = "Please enter both email and password";
-      });
-      return;
-    }
-
     setState(() {
       _isLoading = true;
       _errorCode = "";
@@ -44,59 +36,26 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-            email: _emailController.text.trim(),
+            email: _emailController.text,
             password: _passwordController.text,
           );
 
-      if (mounted) {
-        // Update FCM token
-        // await NotificationService().updateUserFcmToken(
-        //   userCredential.user!.uid,
-        // );
+      // Update FCM token
+      await NotificationService().updateUserFcmToken(userCredential.user!.uid);
 
-        // // Show login success notification
-        // await NotificationService().showLoginSuccessNotification();
+      // Show login success notification
+      // await NotificationService().showLoginSuccessNotification();
 
-        navigateHome();
-      }
+      navigateHome();
     } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        setState(() {
-          // Convert error codes to user-friendly messages
-          switch (e.code) {
-            case 'user-not-found':
-              _errorCode = 'No user found with this email address.';
-              break;
-            case 'wrong-password':
-              _errorCode = 'Incorrect password. Please try again.';
-              break;
-            case 'invalid-email':
-              _errorCode = 'The email address is not valid.';
-              break;
-            case 'user-disabled':
-              _errorCode = 'This account has been disabled.';
-              break;
-            case 'too-many-requests':
-              _errorCode = 'Too many login attempts. Please try again later.';
-              break;
-            default:
-              _errorCode = e.message ?? e.code;
-          }
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorCode = "An error occurred: ${e.toString()}";
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        _errorCode = e.code;
+      });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -123,21 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24),
               _errorCode != ""
                   ? Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          _errorCode,
-                          style: TextStyle(color: Colors.red.shade700),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
+                    children: [Text(_errorCode), const SizedBox(height: 24)],
                   )
                   : const SizedBox(height: 0),
               OutlinedButton(
