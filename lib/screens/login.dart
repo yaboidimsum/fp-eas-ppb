@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-  // Add this import at the top of your file
-  import 'package:fp_recipe/services/notification_service.dart';
+import 'package:fp_recipe/services/notification_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,19 +32,20 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
       _errorCode = "";
     });
-  
+
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+
       // Update FCM token
       await NotificationService().updateUserFcmToken(userCredential.user!.uid);
-      
+
       // Show login success notification
-      await NotificationService().showLoginSuccessNotification();
-      
+      // await NotificationService().showLoginSuccessNotification();
+
       navigateHome();
     } on FirebaseAuthException catch (e) {
       setState(() {

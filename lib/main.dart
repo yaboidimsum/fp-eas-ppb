@@ -1,7 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications_fcm/awesome_notifications_fcm.dart';
-import 'package:fp_recipe/screens/home.dart';
 import 'package:fp_recipe/screens/login.dart';
+import 'package:fp_recipe/screens/main_layout.dart';
+import 'package:fp_recipe/screens/ingredient_list.dart';
+import 'package:fp_recipe/screens/shopping_list.dart';
 import 'package:fp_recipe/screens/register.dart';
 import 'package:fp_recipe/services/notification_service.dart';
 import 'package:flutter/material.dart';
@@ -57,11 +59,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        secondaryHeaderColor: Colors.blueAccent,
+        scaffoldBackgroundColor: Colors.grey[50],
+        cardTheme: CardTheme(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Colors.lightBlue,
+          foregroundColor: Colors.white,
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue,
+          textTheme: ButtonTextTheme.primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      ),
       initialRoute: 'login',
       routes: {
-        'home': (context) => const HomeScreen(),
+        'home': (context) => const MainLayout(),
         'login': (context) => const LoginScreen(),
         'register': (context) => const RegisterScreen(),
+        'ingredients': (context) => const IngredientListScreen(),
+        'shopping': (context) => const ShoppingListScreen(),
       },
     );
   }
