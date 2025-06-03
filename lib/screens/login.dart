@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await NotificationService().updateUserFcmToken(userCredential.user!.uid);
       
       // Show login success notification
-      await NotificationService().showLoginSuccessNotification();
+      // await NotificationService().showLoginSuccessNotification();
       
       navigateHome();
     } on FirebaseAuthException catch (e) {

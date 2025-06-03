@@ -39,6 +39,8 @@ dependencies:
   cloud_firestore: ^5.6.8
   awesome_notifications_fcm: ^0.10.1
   awesome_notifications: ^0.10.1
+  http: ^1.4.0
+  uuid: ^4.3.2
 
 dev_dependencies:
   flutter_test:
