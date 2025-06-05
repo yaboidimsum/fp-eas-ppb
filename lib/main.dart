@@ -4,6 +4,8 @@ import 'package:fp_recipe/screens/login.dart';
 import 'package:fp_recipe/screens/main_layout.dart';
 import 'package:fp_recipe/screens/ingredient_list.dart';
 import 'package:fp_recipe/screens/shopping_list.dart';
+import 'package:fp_recipe/screens/meal_plans_list_screen.dart';
+import 'package:fp_recipe/screens/edit_meal_plan_screen.dart';
 import 'package:fp_recipe/screens/register.dart';
 import 'package:fp_recipe/services/notification_service.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +90,8 @@ class MyApp extends StatelessWidget {
         'register': (context) => const RegisterScreen(),
         'ingredients': (context) => const IngredientListScreen(),
         'shopping': (context) => const ShoppingListScreen(),
+        'mealPlan': (context) => const MealPlansListScreen(),
+        'edit_meal_plan': (context) => const EditMealPlanScreen(),
       },
     );
   }

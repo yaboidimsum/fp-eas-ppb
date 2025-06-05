@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fp_recipe/screens/home.dart';
 import 'package:fp_recipe/screens/ingredient_list_modern.dart'; // Using the modern UI
+import 'package:fp_recipe/screens/meal_plans_list_screen.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -17,7 +18,7 @@ class _MainLayoutState extends State<MainLayout> {
     const HomeScreen(),
     const IngredientListScreen(),
     // const ShoppingListScreen(),
-    const HomeScreen(),
+    const MealPlansListScreen(),
   ];
 
   void _onItemTapped(int index) {
