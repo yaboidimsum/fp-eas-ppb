@@ -1,13 +1,14 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications_fcm/awesome_notifications_fcm.dart';
+import 'package:fp_recipe/screens/edit_meal_plan_screen.dart';
 import 'package:fp_recipe/screens/login.dart';
 import 'package:fp_recipe/screens/main_layout.dart';
 import 'package:fp_recipe/screens/ingredient_list.dart';
-import 'package:fp_recipe/screens/shopping_list.dart';
 import 'package:fp_recipe/screens/meal_plans_list_screen.dart';
-import 'package:fp_recipe/screens/edit_meal_plan_screen.dart';
+import 'package:fp_recipe/screens/shopping_list.dart';
 import 'package:fp_recipe/screens/register.dart';
 import 'package:fp_recipe/services/notification_service.dart';
+import 'package:fp_recipe/widgets/splash_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -57,12 +58,12 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF03A9F4), // Light blue color for splash
         secondaryHeaderColor: Colors.blueAccent,
         scaffoldBackgroundColor: Colors.grey[50],
         cardTheme: CardTheme(
@@ -85,13 +86,19 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: 'login',
       routes: {
-        'home': (context) => const MainLayout(),
-        'login': (context) => const LoginScreen(),
-        'register': (context) => const RegisterScreen(),
-        'ingredients': (context) => const IngredientListScreen(),
-        'shopping': (context) => const ShoppingListScreen(),
-        'mealPlan': (context) => const MealPlansListScreen(),
-        'edit_meal_plan': (context) => const EditMealPlanScreen(),
+        'home': (context) => const SplashScreenWidget(child: MainLayout()),
+        'login': (context) => const SplashScreenWidget(child: LoginScreen()),
+        'register':
+            (context) => const SplashScreenWidget(child: RegisterScreen()),
+        'ingredients':
+            (context) =>
+                const SplashScreenWidget(child: IngredientListScreen()),
+        'shopping':
+            (context) => const SplashScreenWidget(child: ShoppingListScreen()),
+        'mealPlan':
+            (context) => const SplashScreenWidget(child: MealPlansListScreen()),
+        'edit_meal_plan':
+            (context) => const SplashScreenWidget(child: EditMealPlanScreen()),
       },
     );
   }
