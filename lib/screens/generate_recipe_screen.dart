@@ -124,16 +124,16 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
         ingredients = List<Map<String, dynamic>>.from(jsonData['ingredients']);
       }
 
-      List<String> steps = [];
-      if (jsonData['steps'] != null) {
-        steps = List<String>.from(jsonData['steps']);
+      List<String> instructions = [];
+      if (jsonData['instructions'] != null) {
+        instructions = List<String>.from(jsonData['instructions']);
       }
 
       return {
         'name': name,
         'description': description,
         'ingredients': ingredients,
-        'steps': steps,
+        'instructions': instructions,
       };
     } catch (e) {
       print('Error parsing JSON: $e');
@@ -250,7 +250,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
                                   Text(
                                     "Meal Type", // Section title
                                     style: const TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFF2A3136),
                                     ),
@@ -310,7 +310,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
                                       Text(
                                         "Ingredient List", // Section title
                                         style: const TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFF2A3136),
                                         ),
@@ -399,7 +399,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
             Icon(Icons.error_outline, color: Colors.red.shade400, size: 48),
             SizedBox(height: 8),
             Text(
-              'Gagal memproses resep',
+              'Failed to process recipe',
               style: TextStyle(
                 color: Colors.red.shade700,
                 fontWeight: FontWeight.bold,
@@ -407,7 +407,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
             ),
             SizedBox(height: 4),
             Text(
-              'Silakan coba lagi nanti',
+              'Please try again later',
               style: TextStyle(color: Colors.red.shade600),
             ),
           ],
@@ -446,9 +446,15 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
                       valueColor: AlwaysStoppedAnimation(Colors.white)
                   ),
                 )
-                    : Icon(Icons.save, size: 16),
-                label: Text(_isSaving ? 'Saving...' : 'Save'),
-                style: _buttonStyle(Colors.green, fontSize: 12, padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+                    : Icon(Icons.save, size: 16, color: Colors.white,),
+                label: Text(_isSaving ? 'Saving...' : 'Save', style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF2A9D8F),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                )
               ),
             ],
           ),
@@ -476,7 +482,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
       Map<String, dynamic>? recipeData = _parseRecipeJson(_generatedRecipe);
 
       if (recipeData == null) {
-        _showErrorSnackBar('Gagal memproses resep. Silakan coba lagi nanti.');
+        _showSnackBar('Failed to process the recipe. Please try again later.', Colors.redAccent);
         return;
       }
 
@@ -496,7 +502,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
         name: recipeData['name'] ?? 'Generated Recipe',
         description: recipeData['description'],
         ingredients: ingredientsList,
-        steps: List<String>.from(recipeData['steps'] ?? []),
+        instructions: List<String>.from(recipeData['instructions'] ?? []),
         type: _selectedRecipeType,
         imageUrl: null,
       );
@@ -504,16 +510,17 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
       print(recipe);
       await _recipeService.addRecipe(recipe);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Resep berhasil disimpan!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      _showSnackBar('Recipe saved successfully!', Color(0xFF2A9D8F));
+
+      await Future.delayed(Duration(milliseconds: 500));
+
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal menyimpan resep: ${e.toString()}'),
+          content: Text('Failed to save recipe: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -525,17 +532,17 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
   }
 
   TextStyle _sectionTitleStyle() => TextStyle(
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Colors.grey[800],
   );
 
-  void _showErrorSnackBar(String message) {
+  void _showSnackBar(String message, Color color) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: color,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -569,7 +576,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
             ),
             SizedBox(height: 10),
             Text(
-              'Steps',
+              'Instructions',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500
@@ -577,7 +584,7 @@ class _GenerateRecipeScreenState extends State<GenerateRecipeScreen> {
             ),
             SizedBox(height: 4),
             Text(
-              recipeData["steps"].asMap().entries
+              recipeData["instructions"].asMap().entries
                   .map((entry) => "${entry.key + 1}. ${entry.value}")
                   .join('\n'),
               style: TextStyle(fontSize: 14, height: 1.5, color: Colors.grey[800]),

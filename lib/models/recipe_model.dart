@@ -5,7 +5,7 @@ class Recipe {
   final String name;
   final String? description;
   final List<RecipeIngredient> ingredients;
-  final List<String> steps;
+  final List<String> instructions;
   final String type;
   final String? imageUrl;
   final DateTime createdAt;
@@ -15,7 +15,7 @@ class Recipe {
     required this.id,
     required this.name,
     required this.ingredients,
-    required this.steps,
+    required this.instructions,
     required this.type,
     this.imageUrl,
     this.description,
@@ -30,7 +30,7 @@ class Recipe {
       'name': name,
       'description': description,
       'ingredients': ingredients.map((e) => e.toMap()).toList(),
-      'steps': steps,
+      'instructions': instructions,
       'type': type,
       'imageUrl': imageUrl,
       'createdAt': createdAt.millisecondsSinceEpoch,
@@ -47,7 +47,7 @@ class Recipe {
           ?.map((e) => RecipeIngredient.fromMap(e))
           .toList() ??
           [],
-      steps: List<String>.from(map['steps'] ?? []),
+      instructions: List<String>.from(map['instructions'] ?? []),
       type: map['type'] ?? '',
       imageUrl: map['imageUrl'] ?? '',
       createdAt:
@@ -66,7 +66,7 @@ class Recipe {
     String? name,
     String? description,
     List<RecipeIngredient>? ingredients,
-    List<String>? steps,
+    List<String>? instructions,
     String? type,
     String? imageUrl,
     DateTime? createdAt,
@@ -77,7 +77,7 @@ class Recipe {
       name: name ?? this.name,
       description: description ?? this.description,
       ingredients: ingredients ?? this.ingredients,
-      steps: steps ?? this.steps,
+      instructions: instructions ?? this.instructions,
       type: type ?? this.type,
       imageUrl: imageUrl ?? this.imageUrl,
       createdAt: createdAt ?? this.createdAt,

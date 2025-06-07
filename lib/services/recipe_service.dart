@@ -49,4 +49,16 @@ class RecipeService {
 
     return recipes;
   }
+
+  Future<void> deleteRecipe(String recipeId) async {
+    if (_userId.isEmpty) {
+      print('User ID is empty');
+    }
+
+    try {
+      await _recipesCollection(_userId).doc(recipeId).delete();
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 }

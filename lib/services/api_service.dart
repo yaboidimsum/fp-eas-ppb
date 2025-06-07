@@ -65,9 +65,9 @@ class ApiService {
                     },
                     ...
                   ],
-                  "steps": [
-                    "<Step 1>",
-                    "<Step 2>",
+                  "instructions": [
+                    "<Instruction 1>",
+                    "<Instruction 2>",
                     ...
                   ]
                 }

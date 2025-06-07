@@ -5,6 +5,7 @@ import 'package:fp_recipe/screens/login.dart';
 import 'package:fp_recipe/screens/main_layout.dart';
 import 'package:fp_recipe/screens/ingredient_list.dart';
 import 'package:fp_recipe/screens/meal_plans_list_screen.dart';
+import 'package:fp_recipe/screens/recipe_detail.dart';
 import 'package:fp_recipe/screens/recipe_list.dart';
 import 'package:fp_recipe/screens/shopping_list.dart';
 import 'package:fp_recipe/screens/register.dart';
@@ -105,6 +106,8 @@ class MyApp extends StatelessWidget {
             (context) => const SplashScreenWidget(child: EditMealPlanScreen()),
         'recipe':
             (context) => const SplashScreenWidget(child: RecipeListScreen()),
+        'recipe_detail':
+            (context) => const SplashScreenWidget(child: RecipeDetailScreen()),
       },
     );
   }

@@ -15,15 +15,11 @@ class RecipeListScreen extends StatefulWidget {
 class _RecipeListScreenState extends State<RecipeListScreen>
     with SingleTickerProviderStateMixin {
   final RecipeService _recipeService = RecipeService();
-  // final Uuid _uuid = const Uuid();
-  // late AnimationController _animationController;
-
   List<Recipe> _recipes = [];
   bool _isLoading = true;
 
   AnimationController? _animationController;
 
-  // Animation variables
   final List<String> _tabs = ['All Lists', 'Recent', 'Favorites'];
   int _selectedTabIndex = 0;
 
@@ -54,6 +50,11 @@ class _RecipeListScreenState extends State<RecipeListScreen>
       setState(() {
         _recipes = recipes;
       });
+      if (_recipes.isNotEmpty) {
+        _animationController?.forward(from: 0.0);
+      } else {
+        _animationController?.reset();
+      }
     } catch (e) {
       print('Error: $e');
       _showErrorSnackBar('Error loading recipes: $e');
@@ -75,13 +76,17 @@ class _RecipeListScreenState extends State<RecipeListScreen>
     );
   }
 
-  void _navigateToGenerateRecipe(BuildContext context) {
-    Navigator.push(
+  void _navigateToGenerateRecipe(BuildContext context) async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => GenerateRecipeScreen(),
       ),
     );
+
+    if (result == true) {
+      _loadRecipes();
+    }
   }
 
   void _navigateToRecipeDetail(
@@ -94,7 +99,7 @@ class _RecipeListScreenState extends State<RecipeListScreen>
       arguments: recipe,
     );
 
-    if (result == true) {
+    if (result == true || result == 'deleted' || result == 'updated') {
       _loadRecipes();
     }
   }
@@ -327,7 +332,7 @@ class _RecipeListScreenState extends State<RecipeListScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -336,7 +341,6 @@ class _RecipeListScreenState extends State<RecipeListScreen>
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2A3136),
                                 ),
                               ),
                               InkWell(
@@ -388,7 +392,7 @@ class _RecipeListScreenState extends State<RecipeListScreen>
                                 : ListView.builder(
                                   padding: const EdgeInsets.fromLTRB(
                                     20,
-                                    16,
+                                    0,
                                     20,
                                     20,
                                   ),
@@ -584,30 +588,6 @@ class _RecipeListScreenState extends State<RecipeListScreen>
                           fontSize: 12,
                           color: Colors.grey.shade600,
                         ),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {},
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Colors.redAccent,
-                            ),
-                            onPressed: () {},
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                          ),
-                        ],
                       ),
                     ],
                   ),
