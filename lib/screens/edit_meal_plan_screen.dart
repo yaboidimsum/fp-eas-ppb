@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fp_recipe/services/recipe_service.dart';
 import 'package:intl/intl.dart';
 import 'package:fp_recipe/models/meal_plan_model.dart';
 import 'package:fp_recipe/models/recipe_model.dart';
@@ -13,6 +14,7 @@ class EditMealPlanScreen extends StatefulWidget {
 
 class _EditMealPlanScreenState extends State<EditMealPlanScreen> {
   final MealPlanService _mealPlanService = MealPlanService();
+  final RecipeService _recipeService = RecipeService();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -159,7 +161,7 @@ class _EditMealPlanScreenState extends State<EditMealPlanScreen> {
                   child: FutureBuilder<List<Recipe>>(
                     // Assuming getDummyRecipes() is asynchronous
                     future: Future.value(
-                      _mealPlanService.getDummyRecipes(),
+                      _recipeService.getUserRecipes(),
                     ), // Wrap in Future.value for async behavior
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -216,7 +218,7 @@ class _EditMealPlanScreenState extends State<EditMealPlanScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      recipe.description,
+                                      recipe.description!,
                                       style: TextStyle(
                                         color: Colors.grey.shade600,
                                         fontSize: 13,
@@ -226,39 +228,23 @@ class _EditMealPlanScreenState extends State<EditMealPlanScreen> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 6),
-                                    Wrap(
-                                      spacing: 6, // Increased spacing for chips
-                                      runSpacing: 4,
-                                      children:
-                                          recipe.types
-                                              .map(
-                                                (type) => Chip(
-                                                  label: Text(
-                                                    type,
-                                                    style: const TextStyle(
-                                                      fontSize: 11,
-                                                      color: Color(0xFF2A9D8F),
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  backgroundColor: const Color(
-                                                    0xFF2A9D8F,
-                                                  ).withOpacity(0.1),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 4,
-                                                      ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          8,
-                                                        ),
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
+                                    Chip(
+                                      label: Text(
+                                        recipe.type,
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: Color(0xFF2A9D8F),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      backgroundColor: const Color(0xFF2A9D8F).withOpacity(0.1),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -472,7 +458,7 @@ class _EditMealPlanScreenState extends State<EditMealPlanScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          recipe.description,
+                          recipe.description!,
                           style: TextStyle(
                             color: Colors.grey.shade600,
                             fontSize: 13,
@@ -481,34 +467,23 @@ class _EditMealPlanScreenState extends State<EditMealPlanScreen> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 6),
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 4,
-                          children:
-                              recipe.types
-                                  .map(
-                                    (type) => Chip(
-                                      label: Text(
-                                        type,
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          color: Color(0xFF2A9D8F),
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      backgroundColor: const Color(
-                                        0xFF2A9D8F,
-                                      ).withOpacity(0.1),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
+                        Chip(
+                          label: Text(
+                            recipe.type,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Color(0xFF2A9D8F),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          backgroundColor: const Color(0xFF2A9D8F).withOpacity(0.1),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ],
                     ),

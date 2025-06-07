@@ -1,35 +1,87 @@
+import 'package:fp_recipe/models/recipe_ingredient_model.dart';
+
 class Recipe {
   final String id;
   final String name;
-  final String description;
-  final List<String> types;
+  final String? description;
+  final List<RecipeIngredient> ingredients;
+  final List<String> steps;
+  final String type;
   final String? imageUrl;
-  
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
   Recipe({
     required this.id,
     required this.name,
-    required this.description,
-    required this.types,
+    required this.ingredients,
+    required this.steps,
+    required this.type,
     this.imageUrl,
-  });
-  
+    this.description,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) : this.createdAt = createdAt ?? DateTime.now(),
+        this.updatedAt = updatedAt ?? DateTime.now();
+
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      // 'id': id,
       'name': name,
       'description': description,
-      'types': types,
+      'ingredients': ingredients.map((e) => e.toMap()).toList(),
+      'steps': steps,
+      'type': type,
       'imageUrl': imageUrl,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
   }
-  
+
   factory Recipe.fromMap(Map<String, dynamic> map) {
     return Recipe(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       description: map['description'] ?? '',
-      types: List<String>.from(map['types'] ?? []),
-      imageUrl: map['imageUrl'],
+      ingredients: (map['ingredients'] as List<dynamic>?)
+          ?.map((e) => RecipeIngredient.fromMap(e))
+          .toList() ??
+          [],
+      steps: List<String>.from(map['steps'] ?? []),
+      type: map['type'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
+      createdAt:
+      map['createdAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
+          : DateTime.now(),
+      updatedAt:
+      map['updatedAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'])
+          : DateTime.now(),
+    );
+  }
+
+  Recipe copyWith({
+    String? id,
+    String? name,
+    String? description,
+    List<RecipeIngredient>? ingredients,
+    List<String>? steps,
+    String? type,
+    String? imageUrl,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Recipe(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      ingredients: ingredients ?? this.ingredients,
+      steps: steps ?? this.steps,
+      type: type ?? this.type,
+      imageUrl: imageUrl ?? this.imageUrl,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

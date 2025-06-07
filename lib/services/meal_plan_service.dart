@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fp_recipe/models/meal_plan_model.dart';
 import 'package:fp_recipe/models/recipe_model.dart';
+import 'package:fp_recipe/services/recipe_service.dart';
 // import 'package:uuid/uuid.dart';
 
 class MealPlanService {
@@ -15,81 +16,83 @@ class MealPlanService {
   // Collection references
   CollectionReference get _mealPlansRef => _firestore.collection('meal-plans');
 
+  final RecipeService _recipeService = RecipeService();
+
   // Dummy recipes for testing
-  List<Recipe> getDummyRecipes() {
-    return [
-      Recipe(
-        id: '1',
-        name: 'Spicy Noodle Stir-fry',
-        description: 'A quick and flavorful stir-fry with a kick.',
-        types: ['Dinner', 'Asian'],
-        imageUrl: 'https://example.com/spicy-noodle.jpg',
-      ),
-      Recipe(
-        id: '2',
-        name: 'Creamy Mushroom Pasta',
-        description: 'Rich and savory pasta dish.',
-        types: ['Dinner', 'Italian'],
-        imageUrl: 'https://example.com/mushroom-pasta.jpg',
-      ),
-      Recipe(
-        id: '3',
-        name: 'Chicken Caesar Salad',
-        description: 'Classic salad with grilled chicken.',
-        types: ['Lunch', 'Salad'],
-        imageUrl: 'https://example.com/caesar-salad.jpg',
-      ),
-      Recipe(
-        id: '4',
-        name: 'Vegetable Curry',
-        description: 'Hearty and aromatic vegetable curry.',
-        types: ['Dinner', 'Indian', 'Vegetarian'],
-        imageUrl: 'https://example.com/vegetable-curry.jpg',
-      ),
-      Recipe(
-        id: '5',
-        name: 'Quinoa Bowl',
-        description: 'Healthy and customizable grain bowl.',
-        types: ['Lunch', 'Healthy', 'Vegetarian'],
-        imageUrl: 'https://example.com/quinoa-bowl.jpg',
-      ),
-      Recipe(
-        id: '6',
-        name: 'Lentil Soup',
-        description: 'Comforting and nutritious lentil soup.',
-        types: ['Dinner', 'Soup', 'Vegetarian'],
-        imageUrl: 'https://example.com/lentil-soup.jpg',
-      ),
-      Recipe(
-        id: '7',
-        name: 'Avocado Toast',
-        description: 'Simple and nutritious breakfast option.',
-        types: ['Breakfast', 'Vegetarian'],
-        imageUrl: 'https://example.com/avocado-toast.jpg',
-      ),
-      Recipe(
-        id: '8',
-        name: 'Berry Smoothie Bowl',
-        description: 'Refreshing and healthy breakfast bowl.',
-        types: ['Breakfast', 'Vegetarian', 'Vegan'],
-        imageUrl: 'https://example.com/smoothie-bowl.jpg',
-      ),
-      Recipe(
-        id: '9',
-        name: 'Grilled Salmon',
-        description: 'Delicious and healthy grilled salmon fillet.',
-        types: ['Dinner', 'Seafood'],
-        imageUrl: 'https://example.com/grilled-salmon.jpg',
-      ),
-      Recipe(
-        id: '10',
-        name: 'Chocolate Mousse',
-        description: 'Rich and decadent chocolate dessert.',
-        types: ['Dessert'],
-        imageUrl: 'https://example.com/chocolate-mousse.jpg',
-      ),
-    ];
-  }
+  // List<Recipe> getDummyRecipes() {
+  //   return [
+  //     Recipe(
+  //       id: '1',
+  //       name: 'Spicy Noodle Stir-fry',
+  //       description: 'A quick and flavorful stir-fry with a kick.',
+  //       types: ['Dinner', 'Asian'],
+  //       imageUrl: 'https://example.com/spicy-noodle.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '2',
+  //       name: 'Creamy Mushroom Pasta',
+  //       description: 'Rich and savory pasta dish.',
+  //       types: ['Dinner', 'Italian'],
+  //       imageUrl: 'https://example.com/mushroom-pasta.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '3',
+  //       name: 'Chicken Caesar Salad',
+  //       description: 'Classic salad with grilled chicken.',
+  //       types: ['Lunch', 'Salad'],
+  //       imageUrl: 'https://example.com/caesar-salad.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '4',
+  //       name: 'Vegetable Curry',
+  //       description: 'Hearty and aromatic vegetable curry.',
+  //       types: ['Dinner', 'Indian', 'Vegetarian'],
+  //       imageUrl: 'https://example.com/vegetable-curry.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '5',
+  //       name: 'Quinoa Bowl',
+  //       description: 'Healthy and customizable grain bowl.',
+  //       types: ['Lunch', 'Healthy', 'Vegetarian'],
+  //       imageUrl: 'https://example.com/quinoa-bowl.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '6',
+  //       name: 'Lentil Soup',
+  //       description: 'Comforting and nutritious lentil soup.',
+  //       types: ['Dinner', 'Soup', 'Vegetarian'],
+  //       imageUrl: 'https://example.com/lentil-soup.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '7',
+  //       name: 'Avocado Toast',
+  //       description: 'Simple and nutritious breakfast option.',
+  //       types: ['Breakfast', 'Vegetarian'],
+  //       imageUrl: 'https://example.com/avocado-toast.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '8',
+  //       name: 'Berry Smoothie Bowl',
+  //       description: 'Refreshing and healthy breakfast bowl.',
+  //       types: ['Breakfast', 'Vegetarian', 'Vegan'],
+  //       imageUrl: 'https://example.com/smoothie-bowl.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '9',
+  //       name: 'Grilled Salmon',
+  //       description: 'Delicious and healthy grilled salmon fillet.',
+  //       types: ['Dinner', 'Seafood'],
+  //       imageUrl: 'https://example.com/grilled-salmon.jpg',
+  //     ),
+  //     Recipe(
+  //       id: '10',
+  //       name: 'Chocolate Mousse',
+  //       description: 'Rich and decadent chocolate dessert.',
+  //       types: ['Dessert'],
+  //       imageUrl: 'https://example.com/chocolate-mousse.jpg',
+  //     ),
+  //   ];
+  // }
 
   // Get meal plan for a specific date
   Future<MealPlan?> getMealPlanForDate(DateTime date) async {
@@ -121,10 +124,12 @@ class MealPlanService {
       }
 
       final doc = querySnapshot.docs.first;
+
       return MealPlan.fromMap(
         doc.data() as Map<String, dynamic>,
         doc.id,
-        getDummyRecipes(),
+        // getDummyRecipes(),
+        await _recipeService.getUserRecipes(),
       );
     } catch (e) {
       print('Error getting meal plan: $e');
@@ -251,7 +256,7 @@ class MealPlanService {
         return [];
       }
 
-      final allRecipes = getDummyRecipes();
+      final List<Recipe> allRecipes = await _recipeService.getUserRecipes();
       final Map<String, Recipe> recipeMap = {
         for (var recipe in allRecipes) recipe.id: recipe,
       };

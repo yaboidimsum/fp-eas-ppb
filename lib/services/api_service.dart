@@ -34,14 +34,15 @@ class ApiService {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'model': 'deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B',
+          'provider': "hyperbolic",
+          'model': "deepseek-ai/DeepSeek-R1",
           'messages': [
             {
               'role': 'system',
               'content': '''
                 You are a helpful and consistent cooking assistant. You will be given a list of available ingredients with their quantities, and a specific recipe type.
                 Create a single-serving recipe that matches the requested type using reasonable amounts of the provided ingredients. Only use what is necessary to prepare one serving for the specified recipe type. You may add a few complementary ingredients if needed (such as salt, oil, spices, or basic seasonings), but the focus should remain on the provided ingredients.
-                
+          
                 Make sure the recipe is appropriate for the requested type:
                 - Breakfast: Should be energizing, light to moderate portions, suitable for morning consumption
                 - Lunch: Should be balanced, filling but not too heavy, nutritious
@@ -51,17 +52,21 @@ class ApiService {
                 - Appetizer: Should be small portions, flavorful, suitable as starter
                 - Beverage: Should be drinkable, refreshing, appropriate liquid consistency
                 - Salad: Should be fresh, healthy, with good mix of textures and flavors
-                
+          
                 Return the recipe strictly in the following JSON format:
-                
+          
                 {
-                  "recipe_name": "<Recipe Title appropriate for the type>",
+                  "name": "<Recipe Title appropriate for the type>",
+                  "description": "<A short and appealing sentence describing the recipe>",
                   "ingredients": [
-                    "<Ingredient 1 with quantity>",
-                    "<Ingredient 2 with quantity>",
+                    {
+                      "name": "<Ingredient name>",
+                      "quantity": <quantity as number>,
+                      "unit": "<unit>"
+                    },
                     ...
                   ],
-                  "instructions": [
+                  "steps": [
                     "<Step 1>",
                     "<Step 2>",
                     ...
@@ -71,12 +76,9 @@ class ApiService {
             },
             {
               'role': 'user',
-              'content': "I have the following ingredients available: ${ingredients.trim()}. Please create $typeDescription recipe using only reasonable amounts of these ingredients to serve 1 portion. The recipe should be appropriate for ${recipeType}. You don't have to use all the ingredients. You may add basic complementary ingredients (salt, oil, spices) if needed, but focus mainly on the ones I provided."
+              'content': "I have the following ingredients available (each item includes quantity, unit, and name): ${ingredients}. Please create a $typeDescription recipe using only reasonable amounts of these ingredients to serve 1 portion. The recipe should be appropriate for ${recipeType}. You don't have to use all the ingredients. You may add basic complementary ingredients (salt, oil, spices) if needed, but focus mainly on the ones I provided."
             }
           ],
-          'max_tokens': 1024,
-          'temperature': 0.7,
-          'top_p': 0.95
         }),
       );
 
