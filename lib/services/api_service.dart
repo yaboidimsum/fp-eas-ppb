@@ -34,8 +34,7 @@ class ApiService {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'provider': "hyperbolic",
-          'model': "deepseek-ai/DeepSeek-R1",
+          'model': "deepseek/deepseek-r1:free",
           'messages': [
             {
               'role': 'system',
@@ -106,6 +105,8 @@ class ApiService {
         } else {
           throw Exception('Format response tidak valid: $data');
         }
+      } else if (response.statusCode == 402) {
+        throw Exception('Request limit reached. Please wait a moment before trying again.');
       } else if (response.statusCode == 503) {
         throw Exception('Model sedang loading, coba lagi dalam beberapa detik...');
       } else {

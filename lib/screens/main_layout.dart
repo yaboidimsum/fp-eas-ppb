@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fp_recipe/screens/home.dart';
 import 'package:fp_recipe/screens/ingredient_list_modern.dart'; // Using the modern UI
 import 'package:fp_recipe/screens/meal_plans_list_screen.dart';
+import 'package:fp_recipe/screens/recipe_list.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -15,7 +16,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
-    const HomeScreen(),
+    const RecipeListScreen(),
     const IngredientListScreen(),
     // const ShoppingListScreen(),
     const MealPlansListScreen(),
